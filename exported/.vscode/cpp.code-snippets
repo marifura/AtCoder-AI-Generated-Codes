@@ -100,7 +100,7 @@
     "fps": {
         "prefix": "_fps",
         "body": [
-            "// 出典: https://github.com/marifura/AtCoder-AI-Generated-Codes/blob/main/exported/.vscode/cpp.code-snippets",
+            "// 出典: https://github.com/NyaanNyaan/library/blob/master/.vscode/cpp.code-snippets",
             "#include \"modint/montgomery-modint.hpp\"",
             "#include \"modulo/binomial.hpp\"",
             "#include \"fps/ntt-friendly-fps.hpp\"",
@@ -114,7 +114,6 @@
     "binom": {
         "prefix": "_binom",
         "body": [
-            "// 出典: https://github.com/marifura/AtCoder-AI-Generated-Codes/blob/main/exported/.vscode/cpp.code-snippets",
             "#include \"modulo/binomial.hpp\"",
             "",
             "Binomial<mint> C;",
@@ -413,7 +412,7 @@
     "_dfs": {
         "prefix": "_dfs",
         "body": [
-            "// 出典: https://github.com/marifura/AtCoder-AI-Generated-Codes/blob/main/exported/.vscode/cpp.code-snippets",
+            "// 出典: https://github.com/NyaanNyaan/library/blob/master/.vscode/cpp.code-snippets",
             "auto dfs = [&](auto rc, int c, int p = -1,",
             "                [[maybe_unused]] ll dat = 0) -> void {",
             "",
@@ -429,7 +428,7 @@
     "_bfs": {
         "prefix": "_bfs",
         "body": [
-            "// 出典: https://github.com/marifura/AtCoder-AI-Generated-Codes/blob/main/exported/.vscode/cpp.code-snippets",
+            "// 出典: https://github.com/NyaanNyaan/library/blob/master/.vscode/cpp.code-snippets",
             "auto bfs = [&](int st) {",
             "    queue<int> Q;",
             "    Q.push(st);",
