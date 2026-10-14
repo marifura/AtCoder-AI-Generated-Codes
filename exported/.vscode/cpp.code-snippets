@@ -1,3 +1,5 @@
+// 出典: https://github.com/marifura/AtCoder-AI-Generated-Codes/blob/main/exported/.vscode/cpp.code-snippets
+
 {
     // Place your snippets for cpp here. Each snippet is defined under a snippet name and has a prefix, body and
     // description. The prefix is what is used to trigger the snippet and the body will be expanded and inserted. Possible variables are:
@@ -16,6 +18,7 @@
     "grid utilities": {
         "prefix": "_grid",
         "body": [
+            "// 出典: https://github.com/marifura/AtCoder-AI-Generated-Codes/blob/main/exported/.vscode/cpp.code-snippets",
             "const vector<ll> dh = {-1, 0, 1, 0, 1, 1, -1, -1};",
             "const vector<ll> dw = {0, 1, 0, -1, 1, -1, -1, 1};",
             "const vector<char> dir = {'U', 'R', 'D', 'L'};",
@@ -29,6 +32,7 @@
     "query": {
         "prefix": "_query",
         "body": [
+            "// 出典: https://github.com/marifura/AtCoder-AI-Generated-Codes/blob/main/exported/.vscode/cpp.code-snippets",
             "struct Query {",
             "    ll l;",
             "    ll r;",
@@ -56,6 +60,7 @@
     "mo": {
         "prefix": "_mo",
         "body": [
+            "// 出典: https://github.com/marifura/AtCoder-AI-Generated-Codes/blob/main/exported/.vscode/cpp.code-snippets",
             "// クエリは 0 <= l <= r <= N の半開区間 [l, r) とし、id に入力順を保持する",
             "Mo(${1:qs});",
             "",
@@ -95,6 +100,7 @@
     "fps": {
         "prefix": "_fps",
         "body": [
+            "// 出典: https://github.com/marifura/AtCoder-AI-Generated-Codes/blob/main/exported/.vscode/cpp.code-snippets",
             "#include \"modint/montgomery-modint.hpp\"",
             "#include \"modulo/binomial.hpp\"",
             "#include \"fps/ntt-friendly-fps.hpp\"",
@@ -108,6 +114,7 @@
     "binom": {
         "prefix": "_binom",
         "body": [
+            "// 出典: https://github.com/marifura/AtCoder-AI-Generated-Codes/blob/main/exported/.vscode/cpp.code-snippets",
             "#include \"modulo/binomial.hpp\"",
             "",
             "Binomial<mint> C;",
@@ -118,6 +125,7 @@
     "geometry": {
         "prefix": "_geometry",
         "body": [
+            "// 出典: https://github.com/marifura/AtCoder-AI-Generated-Codes/blob/main/exported/.vscode/cpp.code-snippets",
             "#include \"geometry.hpp\"",
             "using namespace geometry;",
             "using P = Point<long long>;"
@@ -127,6 +135,7 @@
     "lightweight geometry": {
         "prefix": "_geometry_light",
         "body": [
+            "// 出典: https://github.com/marifura/AtCoder-AI-Generated-Codes/blob/main/exported/.vscode/cpp.code-snippets",
             "#include \"geometry_light.hpp\"",
             "using namespace geometry_light;",
             "using P = IPoint;"
@@ -136,6 +145,7 @@
     "prime": {
         "prefix": "_prime",
         "body": [
+            "// 出典: https://github.com/marifura/AtCoder-AI-Generated-Codes/blob/main/exported/.vscode/cpp.code-snippets",
             "#include \"prime.hpp\"",
             "",
             "prime::Sieve sieve(10'000'000);",
@@ -146,6 +156,7 @@
     "prime_factorization": {
         "prefix": "_prime_factorization",
         "body": [
+            "// 出典: https://github.com/marifura/AtCoder-AI-Generated-Codes/blob/main/exported/.vscode/cpp.code-snippets",
             "#include \"prime_factorization.hpp\"",
             "using namespace prime_factorization;",
             "$0"
@@ -155,6 +166,7 @@
     "rolling_hash": {
         "prefix": "_rolling_hash",
         "body": [
+            "// 出典: https://github.com/marifura/AtCoder-AI-Generated-Codes/blob/main/exported/.vscode/cpp.code-snippets",
             "#include \"rolling_hash.hpp\"",
             "",
             "RollingHash rh(${1:s});",
@@ -165,6 +177,7 @@
     "tuple_hash": {
         "prefix": "_tuple_hash",
         "body": [
+            "// 出典: https://github.com/marifura/AtCoder-AI-Generated-Codes/blob/main/exported/.vscode/cpp.code-snippets",
             "#include \"tuple_hash.hpp\"",
             "",
             "unordered_map<tuple<${1:int}, ${2:int}>, ${3:int}, TupleHash> ${4:map};",
@@ -175,6 +188,7 @@
     "multidimensional_prefix_sum": {
         "prefix": "_multidimensional_prefix_sum",
         "body": [
+            "// 出典: https://github.com/marifura/AtCoder-AI-Generated-Codes/blob/main/exported/.vscode/cpp.code-snippets",
             "#include \"multidimensional_prefix_sum.hpp\"",
             "$0"
         ],
@@ -183,6 +197,7 @@
     "prefixsum": {
         "prefix": "_prefixsum",
         "body": [
+            "// 出典: https://github.com/marifura/AtCoder-AI-Generated-Codes/blob/main/exported/.vscode/cpp.code-snippets",
             "#include \"prefixsum.hpp\"",
             "$0"
         ],
@@ -191,6 +206,7 @@
     "bis++": {
         "prefix": "_bispp",
         "body": [
+            "// 出典: https://github.com/marifura/AtCoder-AI-Generated-Codes/blob/main/exported/.vscode/cpp.code-snippets",
             "#include \"bis++.hpp\"",
             "$0"
         ],
@@ -199,6 +215,7 @@
     "coordinate_compression": {
         "prefix": "_coordinate_compression",
         "body": [
+            "// 出典: https://github.com/marifura/AtCoder-AI-Generated-Codes/blob/main/exported/.vscode/cpp.code-snippets",
             "#include \"coordinate_compression.hpp\"",
             "$0"
         ],
@@ -207,6 +224,7 @@
     "ordered_multiset": {
         "prefix": "_ordered_multiset",
         "body": [
+            "// 出典: https://github.com/marifura/AtCoder-AI-Generated-Codes/blob/main/exported/.vscode/cpp.code-snippets",
             "#include \"ordered_multiset.hpp\"",
             "",
             "OrderedMultiSet<${1:long long}> ${2:s};",
@@ -217,6 +235,7 @@
     "implicit_treap": {
         "prefix": "_implicit_treap",
         "body": [
+            "// 出典: https://github.com/marifura/AtCoder-AI-Generated-Codes/blob/main/exported/.vscode/cpp.code-snippets",
             "#include \"implicit_treap.hpp\"",
             "",
             "struct Monoid {",
@@ -257,6 +276,7 @@
     "acl_segtree": {
         "prefix": "_segtree",
         "body": [
+            "// 出典: https://github.com/marifura/AtCoder-AI-Generated-Codes/blob/main/exported/.vscode/cpp.code-snippets",
             "struct Monoid {",
             "    using S = ${1:long long};",
             "",
@@ -277,6 +297,7 @@
     "acl_lazy_segtree": {
         "prefix": "_lazy_segtree",
         "body": [
+            "// 出典: https://github.com/marifura/AtCoder-AI-Generated-Codes/blob/main/exported/.vscode/cpp.code-snippets",
             "// 区間和や加算値と区間長の積が、使用する整数型の範囲に収まることを前提とする",
             "struct Monoid {",
             "    struct S {",
@@ -319,6 +340,7 @@
     "grid bfs": {
         "prefix": "_grid_bfs",
         "body": [
+            "// 出典: https://github.com/marifura/AtCoder-AI-Generated-Codes/blob/main/exported/.vscode/cpp.code-snippets",
             "auto len = make_vec({H, W}, MAX);",
             "queue<tuple<ll, ll>> que;",
             "",
@@ -352,6 +374,7 @@
     "grid dijkstra": {
         "prefix": "_grid_dijkstra",
         "body": [
+            "// 出典: https://github.com/marifura/AtCoder-AI-Generated-Codes/blob/main/exported/.vscode/cpp.code-snippets",
             "auto len = make_vec({H, W}, MAX);",
             "using State = tuple<ll, ll, ll>; // 距離, h, w",
             "priority_queue<State, vector<State>, greater<State>> que;",
@@ -390,6 +413,7 @@
     "_dfs": {
         "prefix": "_dfs",
         "body": [
+            "// 出典: https://github.com/marifura/AtCoder-AI-Generated-Codes/blob/main/exported/.vscode/cpp.code-snippets",
             "auto dfs = [&](auto rc, int c, int p = -1,",
             "                [[maybe_unused]] ll dat = 0) -> void {",
             "",
@@ -405,6 +429,7 @@
     "_bfs": {
         "prefix": "_bfs",
         "body": [
+            "// 出典: https://github.com/marifura/AtCoder-AI-Generated-Codes/blob/main/exported/.vscode/cpp.code-snippets",
             "auto bfs = [&](int st) {",
             "    queue<int> Q;",
             "    Q.push(st);",

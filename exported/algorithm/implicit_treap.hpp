@@ -1,4 +1,5 @@
 #pragma once
+// 出典: https://github.com/marifura/AtCoder-AI-Generated-Codes/blob/main/exported/algorithm/implicit_treap.hpp
 
 #include <cstddef>
 #include <cstdint>

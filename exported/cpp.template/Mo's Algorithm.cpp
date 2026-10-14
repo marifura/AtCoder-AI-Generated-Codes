@@ -1,3 +1,5 @@
+// 出典: https://github.com/marifura/AtCoder-AI-Generated-Codes/blob/main/exported/cpp.template/Mo%27s%20Algorithm.cpp
+
 // Query は ll l, r を持つものとする。
 // 元のクエリ番号が必要なら Query に id を持たせておく。
 

@@ -1,3 +1,5 @@
+// 出典: https://github.com/marifura/AtCoder-AI-Generated-Codes/blob/main/exported/cpp.template/lis.cpp
+
 #include <algorithm>
 #include <cstddef>
 #include <utility>
