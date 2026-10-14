@@ -1,0 +1,427 @@
+{
+    // Place your snippets for cpp here. Each snippet is defined under a snippet name and has a prefix, body and
+    // description. The prefix is what is used to trigger the snippet and the body will be expanded and inserted. Possible variables are:
+    // $1, $2 for tab stops, $0 for the final cursor position, and ${1:label}, ${2:another} for placeholders. Placeholders with the
+    // same ids are connected.
+    // Example:
+    // "Print to console": {
+    // "prefix": "log",
+    // "body": [
+    // "console.log('$1');",
+    // "$2"
+    // ],
+    // "description": "Log output to console"
+    // }
+
+    "grid utilities": {
+        "prefix": "_grid",
+        "body": [
+            "const vector<ll> dh = {-1, 0, 1, 0, 1, 1, -1, -1};",
+            "const vector<ll> dw = {0, 1, 0, -1, 1, -1, -1, 1};",
+            "const vector<char> dir = {'U', 'R', 'D', 'L'};",
+            "auto isvalid = [H, W](ll h, ll w) {",
+            "    return 0 <= h && h < H && 0 <= w && w < W;",
+            "};",
+            "$0"
+        ],
+        "description": "Grid directions and bounds checker"
+    },
+    "query": {
+        "prefix": "_query",
+        "body": [
+            "struct Query {",
+            "    ll l;",
+            "    ll r;",
+            "    ll ans = 0;",
+            "    ll id = -1;",
+            "    auto operator<=>(const Query&) const = default;",
+            "    bool operator==(const Query&) const = default;",
+            "};",
+            "",
+            "istream& operator>>(istream& is, Query& query) {",
+            "    return is >> query.l >> query.r;",
+            "}",
+            "",
+            "istream& operator>>(istream& is, vector<Query>& queries) {",
+            "    rep(i, queries.size()) {",
+            "        is >> queries[i];",
+            "        queries[i].id = static_cast<ll>(i);",
+            "    }",
+            "    return is;",
+            "}",
+            "$0"
+        ],
+        "description": "Query type with answer storage and input-order IDs"
+    },
+    "mo": {
+        "prefix": "_mo",
+        "body": [
+            "// クエリは 0 <= l <= r <= N の半開区間 [l, r) とし、id に入力順を保持する",
+            "Mo(${1:qs});",
+            "",
+            "// 空区間 [0, 0) に対応する状態を、このループの前に用意する",
+            "ll l = 0, r = 0;",
+            "rep(i, ${2:Q}) {",
+            "    while (r < ${1:qs}[i].r) {",
+            "        ${3:// 添字 r の要素を追加}",
+            "        r++;",
+            "    }",
+            "    while (l < ${1:qs}[i].l) {",
+            "        ${4:// 添字 l の要素を削除}",
+            "        l++;",
+            "    }",
+            "    while (l > ${1:qs}[i].l) {",
+            "        ${5:// 添字 l - 1 の要素を追加}",
+            "        l--;",
+            "    }",
+            "    while (r > ${1:qs}[i].r) {",
+            "        ${6:// 添字 r - 1 の要素を削除}",
+            "        r--;",
+            "    }",
+            "    ${1:qs}[i].ans = ${7:0};",
+            "}",
+            "",
+            "sort(all(${1:qs}), [](const Query& a, const Query& b) {",
+            "    return a.id < b.id;",
+            "});",
+            "",
+            "rep(i, ${2:Q}) {",
+            "    cout << ${1:qs}[i].ans << '\\n';",
+            "}",
+            "$0"
+        ],
+        "description": "Mo法の区間移動・回答保存・入力順での出力"
+    },
+    "fps": {
+        "prefix": "_fps",
+        "body": [
+            "#include \"modint/montgomery-modint.hpp\"",
+            "#include \"modulo/binomial.hpp\"",
+            "#include \"fps/ntt-friendly-fps.hpp\"",
+            "// #include \"fps/arbitrary-fps.hpp\"",
+            "//",
+            "Binomial<mint> C;",
+            "using fps = FormalPowerSeries<mint>;"
+        ],
+        "description": "fps"
+    },
+    "binom": {
+        "prefix": "_binom",
+        "body": [
+            "#include \"modulo/binomial.hpp\"",
+            "",
+            "Binomial<mint> C;",
+            "$0"
+        ],
+        "description": "binomial coefficients"
+    },
+    "geometry": {
+        "prefix": "_geometry",
+        "body": [
+            "#include \"geometry.hpp\"",
+            "using namespace geometry;",
+            "using P = Point<long long>;"
+        ],
+        "description": "geometry"
+    },
+    "lightweight geometry": {
+        "prefix": "_geometry_light",
+        "body": [
+            "#include \"geometry_light.hpp\"",
+            "using namespace geometry_light;",
+            "using P = IPoint;"
+        ],
+        "description": "Lightweight geometry using long long and double"
+    },
+    "prime": {
+        "prefix": "_prime",
+        "body": [
+            "#include \"prime.hpp\"",
+            "",
+            "prime::Sieve sieve(10'000'000);",
+            "$0"
+        ],
+        "description": "Prime sieve initialized up to 10^7"
+    },
+    "prime_factorization": {
+        "prefix": "_prime_factorization",
+        "body": [
+            "#include \"prime_factorization.hpp\"",
+            "using namespace prime_factorization;",
+            "$0"
+        ],
+        "description": "64-bit prime factorization"
+    },
+    "rolling_hash": {
+        "prefix": "_rolling_hash",
+        "body": [
+            "#include \"rolling_hash.hpp\"",
+            "",
+            "RollingHash rh(${1:s});",
+            "$0"
+        ],
+        "description": "Rolling hash for substring comparison, palindrome checks, and LCP"
+    },
+    "tuple_hash": {
+        "prefix": "_tuple_hash",
+        "body": [
+            "#include \"tuple_hash.hpp\"",
+            "",
+            "unordered_map<tuple<${1:int}, ${2:int}>, ${3:int}, TupleHash> ${4:map};",
+            "$0"
+        ],
+        "description": "Hash function for using tuples as unordered_map keys"
+    },
+    "multidimensional_prefix_sum": {
+        "prefix": "_multidimensional_prefix_sum",
+        "body": [
+            "#include \"multidimensional_prefix_sum.hpp\"",
+            "$0"
+        ],
+        "description": "D-dimensional prefix sums"
+    },
+    "prefixsum": {
+        "prefix": "_prefixsum",
+        "body": [
+            "#include \"prefixsum.hpp\"",
+            "$0"
+        ],
+        "description": "Prefix and suffix sums/products"
+    },
+    "bis++": {
+        "prefix": "_bispp",
+        "body": [
+            "#include \"bis++.hpp\"",
+            "$0"
+        ],
+        "description": "Binary and ternary search utilities"
+    },
+    "coordinate_compression": {
+        "prefix": "_coordinate_compression",
+        "body": [
+            "#include \"coordinate_compression.hpp\"",
+            "$0"
+        ],
+        "description": "Coordinate compression"
+    },
+    "ordered_multiset": {
+        "prefix": "_ordered_multiset",
+        "body": [
+            "#include \"ordered_multiset.hpp\"",
+            "",
+            "OrderedMultiSet<${1:long long}> ${2:s};",
+            "$0"
+        ],
+        "description": "OrderedMultiSet with duplicate values and order statistics"
+    },
+    "implicit_treap": {
+        "prefix": "_implicit_treap",
+        "body": [
+            "#include \"implicit_treap.hpp\"",
+            "",
+            "struct Monoid {",
+            "    using S = ${1:long long};",
+            "",
+            "    static S op(const S& a, const S& b) {",
+            "        return ${2:a + b};",
+            "    }",
+            "    static S e() {",
+            "        return ${3:0};",
+            "    }",
+            "};",
+            "",
+            "struct Action {",
+            "    using F = ${4:long long};",
+            "",
+            "    static Monoid::S mapping(const F& f, const Monoid::S& x, std::size_t N) {",
+            "        return ${5:x + f * static_cast<Monoid::S>(N)};",
+            "    }",
+            "    // composition(f, g) は、先に g、後に f を適用した作用を返す",
+            "    static F composition(const F& f, const F& g) {",
+            "        return ${6:f + g};",
+            "    }",
+            "    static F id() {",
+            "        return ${7:0};",
+            "    }",
+            "};",
+            "",
+            "using Treap = ImplicitTreap<",
+            "Monoid::S, Monoid::op, Monoid::e, Action::F, Action::mapping,",
+            "Action::composition, Action::id>;",
+            "",
+            "Treap treap(${8:N});",
+            "$0"
+        ],
+        "description": "ImplicitTreap with monoid and action structs"
+    },
+    "acl_segtree": {
+        "prefix": "_segtree",
+        "body": [
+            "struct Monoid {",
+            "    using S = ${1:long long};",
+            "",
+            "    static S op(S a, S b) {",
+            "        return ${2:a + b};",
+            "    }",
+            "    static S e() {",
+            "        return ${3:0};",
+            "    }",
+            "};",
+            "",
+            "using SegTree = atcoder::segtree<Monoid::S, Monoid::op, Monoid::e>;",
+            "SegTree seg(${4:N});",
+            "$0"
+        ],
+        "description": "ACL segtree with a monoid struct"
+    },
+    "acl_lazy_segtree": {
+        "prefix": "_lazy_segtree",
+        "body": [
+            "// 区間和や加算値と区間長の積が、使用する整数型の範囲に収まることを前提とする",
+            "struct Monoid {",
+            "    struct S {",
+            "        ${1:long long} sum;",
+            "        long long size;",
+            "    };",
+            "",
+            "    static S op(S a, S b) {",
+            "        return {${2:a.sum + b.sum}, a.size + b.size};",
+            "    }",
+            "    static S e() {",
+            "        return {${3:0}, 0};",
+            "    }",
+            "};",
+            "",
+            "struct Action {",
+            "    using F = ${4:long long};",
+            "",
+            "    static Monoid::S mapping(F f, Monoid::S x) {",
+            "        return {${5:x.sum + f * x.size}, x.size};",
+            "    }",
+            "    // composition(f, g) は、先に g、後に f を適用した作用を返す",
+            "    static F composition(F f, F g) {",
+            "        return ${6:f + g};",
+            "    }",
+            "    static F id() {",
+            "        return ${7:0};",
+            "    }",
+            "};",
+            "",
+            "using LazySegTree = atcoder::lazy_segtree<",
+            "    Monoid::S, Monoid::op, Monoid::e, Action::F, Action::mapping,",
+            "    Action::composition, Action::id>;",
+            "// 各要素は {値, 1} で初期化・更新し、区間和は seg.prod(l, r).sum で取得する",
+            "LazySegTree seg(std::vector<Monoid::S>(${8:N}, {0, 1}));",
+            "$0"
+        ],
+        "description": "ACL lazy_segtree：区間加算・区間和（区間長付きモノイド）"
+    },
+    "grid bfs": {
+        "prefix": "_grid_bfs",
+        "body": [
+            "auto len = make_vec({H, W}, MAX);",
+            "queue<tuple<ll, ll>> que;",
+            "",
+            "// 初期状態を作成",
+            "ll start_h = ${1:0};",
+            "ll start_w = ${2:0};",
+            "que.push({start_h, start_w});",
+            "len[start_h][start_w] = 0;",
+            "",
+            "while (!que.empty()) {",
+            "    auto [h, w] = que.front();",
+            "    que.pop();",
+            "",
+            "    rep(m, 4) {",
+            "        ll hh = h + dh[m];",
+            "        ll ww = w + dw[m];",
+            "",
+            "        if (!isvalid(hh, ww)) continue;",
+            "        if (S[hh][ww] == '#') continue;",
+            "        if (len[hh][ww] != MAX) continue;",
+            "",
+            "        len[hh][ww] = len[h][w] + 1;",
+            "        que.push({hh, ww});",
+            "    }",
+            "}",
+            "",
+            "$0"
+        ],
+        "description": "Grid BFS with extensible multidimensional state"
+    },
+    "grid dijkstra": {
+        "prefix": "_grid_dijkstra",
+        "body": [
+            "auto len = make_vec({H, W}, MAX);",
+            "using State = tuple<ll, ll, ll>; // 距離, h, w",
+            "priority_queue<State, vector<State>, greater<State>> que;",
+            "",
+            "// 初期状態を作成",
+            "ll start_h = ${1:0};",
+            "ll start_w = ${2:0};",
+            "que.push({0, start_h, start_w});",
+            "len[start_h][start_w] = 0;",
+            "",
+            "while (!que.empty()) {",
+            "    auto [current_len, h, w] = que.top();",
+            "    que.pop();",
+            "",
+            "    if (len[h][w] != current_len) continue;",
+            "",
+            "    rep(m, 4) {",
+            "        ll hh = h + dh[m];",
+            "        ll ww = w + dw[m];",
+            "",
+            "        if (!isvalid(hh, ww)) continue;",
+            "        if (S[hh][ww] == '#') continue;",
+            "",
+            "        ll next_len = current_len + ${3:1};",
+            "        if (len[hh][ww] <= next_len) continue;",
+            "",
+            "        len[hh][ww] = next_len;",
+            "        que.push({next_len, hh, ww});",
+            "    }",
+            "}",
+            "",
+            "$0"
+        ],
+        "description": "Grid Dijkstra with extensible multidimensional state"
+    },
+    "_dfs": {
+        "prefix": "_dfs",
+        "body": [
+            "auto dfs = [&](auto rc, int c, int p = -1,",
+            "                [[maybe_unused]] ll dat = 0) -> void {",
+            "",
+            "    for (auto& d : g[c]) {",
+            "        if (d == p) continue;",
+            "        rc(rc, d, c);",
+            "    }",
+            "};",
+            "dfs(dfs, 0);"
+        ],
+        "description": ""
+    },
+    "_bfs": {
+        "prefix": "_bfs",
+        "body": [
+            "auto bfs = [&](int st) {",
+            "    queue<int> Q;",
+            "    Q.push(st);",
+            "    while (!Q.empty()) {",
+            "        int c = Q.front();",
+            "        Q.pop();",
+            "        for (auto d : g[c]) {",
+            "            if (/* 訪問済みか判定 */ false) continue;",
+            "            Q.push(d);",
+            "",
+            "            // ここに処理を書く",
+            "",
+            "        }",
+            "    }",
+            "};",
+            "bfs(0);"
+        ],
+        "description": ""
+    }
+}
