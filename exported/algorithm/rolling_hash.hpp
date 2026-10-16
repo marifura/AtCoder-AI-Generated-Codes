@@ -24,6 +24,9 @@ public:
     };
 
 private:
+    // 動的版でも同じ法・BASE・HashValueを使い、相互比較を可能にする。
+    friend class DynamicRollingHash;
+
     // 2^61 - 1 は素数。積の計算には 128 bit 整数を使う。
     static constexpr ull MOD = (1ULL << 61) - 1;
     std::vector<ull> hash_value;
