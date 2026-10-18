@@ -246,3 +246,57 @@ using vp = vector<pair<ll, ll>>;
 using vvp = vector<vector<pair<ll, ll>>>;
 template<class T>
 using priority_queue_min = priority_queue<T, vector<T>, greater<T>>;
+
+namespace seg_detail {
+inline ll sum_op(ll a, ll b) { return a + b; }
+inline ll sum_e() { return 0; }
+
+template <class T>
+T min_op(T a, T b) { return min(a, b); }
+
+template <class T>
+T max_op(T a, T b) { return max(a, b); }
+
+inline ll min_e() { return MAX; }
+inline ll max_e() { return -MAX; }
+
+template <class A, class B>
+pair<A, B> pair_min_e() { return {A{MAX}, B{MAX}}; }
+
+template <class A, class B>
+pair<A, B> pair_max_e() { return {A{-MAX}, B{-MAX}}; }
+
+template <class... Ts>
+tuple<Ts...> tuple_min_e() { return tuple<Ts...>{Ts{MAX}...}; }
+
+template <class... Ts>
+tuple<Ts...> tuple_max_e() { return tuple<Ts...>{Ts{-MAX}...}; }
+}
+
+// 和は、途中の計算も含めてllの範囲に収まること。
+using seg_sum = segtree<ll, seg_detail::sum_op, seg_detail::sum_e>;
+
+// min・maxに格納する値は、各要素とも[-MAX, MAX]の範囲とする。
+using seg_min = segtree<ll, seg_detail::min_op<ll>, seg_detail::min_e>;
+using seg_max = segtree<ll, seg_detail::max_op<ll>, seg_detail::max_e>;
+
+// pair・tupleは辞書順で比較する。各要素型は±MAXを表現できる整数型とする。
+template <class A = ll, class B = ll>
+using seg_pair_min = segtree<
+    pair<A, B>, seg_detail::min_op<pair<A, B>>, seg_detail::pair_min_e<A, B>>;
+
+template <class A = ll, class B = ll>
+using seg_pair_max = segtree<
+    pair<A, B>, seg_detail::max_op<pair<A, B>>, seg_detail::pair_max_e<A, B>>;
+
+template <class... Ts>
+using seg_tuple_min = segtree<
+    tuple<Ts...>, seg_detail::min_op<tuple<Ts...>>, seg_detail::tuple_min_e<Ts...>>;
+
+template <class... Ts>
+using seg_tuple_max = segtree<
+    tuple<Ts...>, seg_detail::max_op<tuple<Ts...>>, seg_detail::tuple_max_e<Ts...>>;
+
+// 使用例: seg_sum s(vector<ll>{1, 2, 3}); s.set(0, 5); s.prod(0, 2); // 7
+// 使用例: seg_pair_min<> p(vector<pair<ll, ll>>{{1, 2}, {1, 3}});
+// 使用例: seg_tuple_max<ll, ll, ll> t(vector<tuple<ll, ll, ll>>{{1, 2, 3}});
