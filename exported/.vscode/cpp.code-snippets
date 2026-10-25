@@ -97,6 +97,35 @@
         ],
         "description": "Mo法の区間移動・回答保存・入力順での出力"
     },
+    "two pointers": {
+        "prefix": ["_shakutori", "_two_pointers"],
+        "body": [
+            "// 出典: https://github.com/marifura/AtCoder-AI-Generated-Codes/blob/main/exported/.vscode/cpp.code-snippets",
+            "// 条件を満たす限り区間を伸ばす型。左端を進めても右端を戻す必要がないことを前提とする",
+            "// 空区間 [0, 0) に対応する状態を、このループの前に用意する",
+            "ll j = 0;",
+            "rep(i, ${1:N}) {",
+            "    // 現在の区間は [i, j)",
+            "    while (j < ${1:N}) {",
+            "        if (${2:/* A[j] を追加すると条件を満たさない */ false}) break;",
+            "",
+            "        ${3:// A[j] を追加して状態を更新する}",
+            "        ++j;",
+            "    }",
+            "",
+            "    ${4:// 区間 [i, j) で答えを更新する（例: chmax(ans, j - i);）}",
+            "",
+            "    if (i < j) {",
+            "        ${5:// A[i] を取り除いて状態を更新する}",
+            "    } else {",
+            "        // 空区間なので、次の左端に右端を合わせる",
+            "        j = i + 1;",
+            "    }",
+            "}",
+            "$0"
+        ],
+        "description": "尺取り法：半開区間 [i, j) を条件を満たす限り伸ばす"
+    },
     "fps": {
         "prefix": "_fps",
         "body": [
