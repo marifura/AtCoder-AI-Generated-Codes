@@ -247,6 +247,17 @@
         ],
         "description": "Rolling hash for substring comparison, palindrome checks, and LCP"
     },
+    "trie": {
+        "prefix": "_trie",
+        "body": [
+            "// 出典: https://github.com/marifura/AtCoder-AI-Generated-Codes/blob/main/exported/.vscode/cpp.code-snippets",
+            "#include \"trie.hpp\"",
+            "",
+            "Trie<> ${1:trie};",
+            "$0"
+        ],
+        "description": "重複・接頭辞・辞書順の順位検索に対応するTrieを初期化"
+    },
     "tuple_hash": {
         "prefix": "_tuple_hash",
         "body": [
