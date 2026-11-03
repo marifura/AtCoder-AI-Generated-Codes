@@ -236,6 +236,13 @@ ld distance(const Point<T>& a, const Point<T>& b) {
 }
 
 template<class T>
+Calc<T> squared_distance(const Point<T>& a, const Point<T>& b) {
+    const auto dx = calc(a.x) - calc(b.x);
+    const auto dy = calc(a.y) - calc(b.y);
+    return dx * dx + dy * dy;
+}
+
+template<class T>
 Vector<T> rotate90(const Vector<T>& v) {
     return {-v.y, v.x};
 }
@@ -250,6 +257,48 @@ Point<ld> rotate(const Vector<T>& v, ld radians) {
 template<class T>
 ld argument(const Vector<T>& v) {
     return std::atan2(static_cast<ld>(v.y), static_cast<ld>(v.x));
+}
+
+namespace detail {
+
+inline ld vector_angle(ld ax, ld ay, ld bx, ld by, bool unoriented) {
+    if (!std::isfinite(ax) || !std::isfinite(ay)
+        || !std::isfinite(bx) || !std::isfinite(by)) {
+        throw std::invalid_argument("angle requires finite vector components");
+    }
+    const ld a_scale = std::max(std::abs(ax), std::abs(ay));
+    const ld b_scale = std::max(std::abs(bx), std::abs(by));
+    if (a_scale == 0 || b_scale == 0) {
+        throw std::invalid_argument("angle requires non-zero vectors");
+    }
+    // 長さの大小による積のオーバーフローを避け、ほぼ平行な場合もatan2で求める。
+    ax /= a_scale;
+    ay /= a_scale;
+    bx /= b_scale;
+    by /= b_scale;
+    const ld inner = ax * bx + ay * by;
+    return std::atan2(std::abs(ax * by - ay * bx),
+                      unoriented ? std::abs(inner) : inner);
+}
+
+} // 内部実装
+
+// 方向を持つ2ベクトルのなす角を[0, pi]のラジアンで返す。
+// 成分が厳密に零のベクトル、非有限の成分は許容しない。
+template<class T>
+ld angle(const Vector<T>& a, const Vector<T>& b) {
+    return detail::vector_angle(static_cast<ld>(a.x), static_cast<ld>(a.y),
+                                static_cast<ld>(b.x), static_cast<ld>(b.y), false);
+}
+
+// 頂点bの角ABCを[0, pi]のラジアンで返す。a == bまたはb == cなら例外。
+// 座標差は有限であること。整数の差は拡張してから計算する。
+template<class T>
+ld angle(const Point<T>& a, const Point<T>& b, const Point<T>& c) {
+    return detail::vector_angle(static_cast<ld>(calc(a.x) - calc(b.x)),
+                                static_cast<ld>(calc(a.y) - calc(b.y)),
+                                static_cast<ld>(calc(c.x) - calc(b.x)),
+                                static_cast<ld>(calc(c.y) - calc(b.y)), false);
 }
 
 // 零ベクトルには方向がないため、いずれかが零ベクトルならfalseを返す。
@@ -559,6 +608,24 @@ bool is_degenerate(const Line<T>& line) {
 template<class T>
 bool is_degenerate(const Segment<T>& segment) {
     return equal(segment.a, segment.b);
+}
+
+// 向きを区別しない2直線の小さい方の角を[0, pi/2]のラジアンで返す。
+// 退化直線は許容しない。浮動小数点の退化判定は既存の直線APIと同じ。
+template<class T>
+ld angle(const Line<T>& lhs, const Line<T>& rhs) {
+    if (is_degenerate(lhs) || is_degenerate(rhs)) {
+        throw std::invalid_argument("a line requires two distinct points");
+    }
+    return detail::vector_angle(static_cast<ld>(calc(lhs.b.x) - calc(lhs.a.x)),
+                                static_cast<ld>(calc(lhs.b.y) - calc(lhs.a.y)),
+                                static_cast<ld>(calc(rhs.b.x) - calc(rhs.a.x)),
+                                static_cast<ld>(calc(rhs.b.y) - calc(rhs.a.y)), true);
+}
+
+inline ld angle(const IntegerLine& lhs, const IntegerLine& rhs) {
+    return detail::vector_angle(static_cast<ld>(lhs.a), static_cast<ld>(lhs.b),
+                                static_cast<ld>(rhs.a), static_cast<ld>(rhs.b), true);
 }
 
 template<class T>
@@ -1002,6 +1069,207 @@ Polygon<T> convex_hull(Polygon<T> points, bool keep_collinear = false) {
     return lower;
 }
 
+namespace detail {
+
+template<class T>
+void validate_finite_point(const Point<T>& point) {
+    if constexpr (std::is_floating_point_v<T>) {
+        if (!std::isfinite(point.x) || !std::isfinite(point.y)) {
+            throw std::invalid_argument("coordinates must be finite");
+        }
+    }
+}
+
+// 反時計回りの厳密な凸多角形に対する回転キャリパー法。頂点数は2以上。
+template<class T>
+std::pair<Point<T>, Point<T>> convex_farthest_pair(const Polygon<T>& polygon) {
+    std::pair<Point<T>, Point<T>> result{polygon[0], polygon[1]};
+    auto best = squared_distance(result.first, result.second);
+    const auto update = [&](std::size_t i, std::size_t j) {
+        const auto candidate = squared_distance(polygon[i], polygon[j]);
+        if (candidate > best) {
+            best = candidate;
+            result = {polygon[i], polygon[j]};
+        }
+    };
+    const std::size_t n = polygon.size();
+    if (n == 2) return result;
+    std::size_t j = 1;
+    for (std::size_t i = 0; i < n; ++i) {
+        const std::size_t next_i = (i + 1) % n;
+        while (cross(polygon[i], polygon[next_i], polygon[(j + 1) % n])
+               > cross(polygon[i], polygon[next_i], polygon[j])) {
+            j = (j + 1) % n;
+        }
+        update(i, j);
+        update(next_i, j);
+        // 対辺が平行な場合は、最大の高さを共有する両端を調べる。
+        if (cross(polygon[i], polygon[next_i], polygon[(j + 1) % n])
+            == cross(polygon[i], polygon[next_i], polygon[j])) {
+            update(i, (j + 1) % n);
+            update(next_i, (j + 1) % n);
+        }
+    }
+    return result;
+}
+
+} // 内部実装
+
+// 最近点対をO(N log N)時間、O(N)追加領域で求める。入力の順序は変更しない。
+// 2要素未満はnullopt。同一座標の異なる要素も点対として扱う。
+// 距離が同じ場合の選択順は規定しない。座標は有限、差とその二乗および
+// 二乗和はCalc<T>で表現可能であること。浮動小数点の比較にはEPSを使わない。
+template<class T>
+std::optional<std::pair<Point<T>, Point<T>>> closest_pair(Polygon<T> points) {
+    for (const auto& point : points) detail::validate_finite_point(point);
+    if (points.size() < 2) return std::nullopt;
+    std::sort(points.begin(), points.end());
+    for (std::size_t i = 1; i < points.size(); ++i) {
+        if (points[i - 1] == points[i]) return {{points[i - 1], points[i]}};
+    }
+    std::pair<Point<T>, Point<T>> result{points[0], points[1]};
+    auto best = squared_distance(result.first, result.second);
+    Polygon<T> buffer(points.size()), strip;
+    strip.reserve(points.size());
+    const auto by_y = [](const Point<T>& a, const Point<T>& b) {
+        return a.y != b.y ? a.y < b.y : a.x < b.x;
+    };
+    const auto update = [&](const Point<T>& a, const Point<T>& b) {
+        const auto candidate = squared_distance(a, b);
+        if (candidate < best) {
+            best = candidate;
+            result = {a, b};
+        }
+    };
+    const auto solve = [&](auto&& self, std::size_t left, std::size_t right) -> void {
+        if (right - left <= 3) {
+            for (std::size_t i = left; i < right; ++i) {
+                for (std::size_t j = i + 1; j < right; ++j) update(points[i], points[j]);
+            }
+            std::sort(points.begin() + left, points.begin() + right, by_y);
+            return;
+        }
+        const std::size_t middle = std::midpoint(left, right);
+        const auto middle_x = calc(points[middle].x);
+        self(self, left, middle);
+        self(self, middle, right);
+        std::merge(points.begin() + left, points.begin() + middle,
+                   points.begin() + middle, points.begin() + right,
+                   buffer.begin() + left, by_y);
+        std::copy(buffer.begin() + left, buffer.begin() + right, points.begin() + left);
+        strip.clear();
+        for (std::size_t i = left; i < right; ++i) {
+            const auto dx = calc(points[i].x) - middle_x;
+            if (dx * dx >= best) continue;
+            for (std::size_t j = strip.size(); j > 0; --j) {
+                const auto dy = calc(points[i].y) - calc(strip[j - 1].y);
+                if (dy * dy >= best) break;
+                update(points[i], strip[j - 1]);
+            }
+            strip.push_back(points[i]);
+        }
+    };
+    solve(solve, 0, points.size());
+    return result;
+}
+
+// 点集合の最遠点対をO(N log N)時間、O(N)追加領域で求める。
+// 2要素未満はnullopt。重複座標も異なる入力要素なら点対にできる。
+// 座標は有限、外積と距離の二乗の中間値はCalc<T>で表現可能であること。
+// 細長い点集合の最遠点を失わないよう、内部の凸包判定にはEPSを使わない。
+template<class T>
+std::optional<std::pair<Point<T>, Point<T>>> farthest_pair(Polygon<T> points) {
+    for (const auto& point : points) detail::validate_finite_point(point);
+    if (points.size() < 2) return std::nullopt;
+    std::sort(points.begin(), points.end());
+    points.erase(std::unique(points.begin(), points.end()), points.end());
+    if (points.size() == 1) return {{points[0], points[0]}};
+    Polygon<T> hull;
+    for (const auto& point : points) {
+        while (hull.size() >= 2
+               && cross(hull[hull.size() - 2], hull.back(), point) <= 0) {
+            hull.pop_back();
+        }
+        hull.push_back(point);
+    }
+    const std::size_t lower_size = hull.size();
+    for (std::size_t i = points.size() - 1; i > 0; --i) {
+        const auto& point = points[i - 1];
+        while (hull.size() > lower_size
+               && cross(hull[hull.size() - 2], hull.back(), point) <= 0) {
+            hull.pop_back();
+        }
+        hull.push_back(point);
+    }
+    hull.pop_back();
+    return detail::convex_farthest_pair(hull);
+}
+
+// 点集合のユークリッド直径。空または1点なら0。計算量はO(N log N)。
+template<class T>
+ld diameter(Polygon<T> points) {
+    const auto pair = farthest_pair(std::move(points));
+    return pair ? distance(pair->first, pair->second) : 0.0L;
+}
+
+// 凸包構築済みの場合にO(N)時間、O(1)追加領域でユークリッド直径を求める。
+// 3点以上は単純かつ反時計回りの厳密な凸多角形を渡すこと。
+// 重複頂点や辺上の余分な頂点は不可。convex_hull(points)の結果を利用できる。
+// 厳密な凸性の確認にはEPSを使わない。単純性の検証は呼び出し側で行う。
+// 空または1点なら0。数値範囲の前提はfarthest_pair()と同じ。
+template<class T>
+ld convex_diameter(const Polygon<T>& polygon) {
+    for (const auto& point : polygon) detail::validate_finite_point(point);
+    if (polygon.size() < 2) return 0;
+    if (polygon.size() >= 3) {
+        for (std::size_t i = 0; i < polygon.size(); ++i) {
+            if (cross(polygon[i], polygon[(i + 1) % polygon.size()],
+                      polygon[(i + 2) % polygon.size()]) <= 0) {
+                throw std::invalid_argument("a strictly convex counterclockwise polygon is required");
+            }
+        }
+    }
+    const auto pair = detail::convex_farthest_pair(polygon);
+    return distance(pair.first, pair.second);
+}
+
+// 有向直線a→bの左側を境界ごと残す。O(N)時間・追加領域。
+// 入力は境界順の凸多角形で、時計回りも許容する。空、点、線分も扱える。
+// 先頭点を末尾に重ねない。結果は空、点、線分となる場合もある。
+// 座標は有限、外積の中間値はCalc<T>で表現可能であること。
+template<class T>
+Polygon<ld> convex_cut(const Polygon<T>& polygon, const Line<T>& line) {
+    detail::validate_finite_point(line.a);
+    detail::validate_finite_point(line.b);
+    if (is_degenerate(line)) {
+        throw std::invalid_argument("a line requires two distinct points");
+    }
+    for (const auto& point : polygon) detail::validate_finite_point(point);
+    Polygon<ld> result;
+    const auto append = [&](const Point<ld>& point) {
+        if (result.empty() || result.back() != point) result.push_back(point);
+    };
+    for (std::size_t i = 0; i < polygon.size(); ++i) {
+        const auto& a = polygon[i];
+        const auto& b = polygon[(i + 1) % polygon.size()];
+        const auto da = cross(line.a, line.b, a);
+        const auto db = cross(line.a, line.b, b);
+        const int sa = sign<T>(da), sb = sign<T>(db);
+        if (sa >= 0) append(to_ld(a));
+        if ((sa < 0 && sb > 0) || (sa > 0 && sb < 0)) {
+            const ld abs_da = std::abs(static_cast<ld>(da));
+            const ld abs_db = std::abs(static_cast<ld>(db));
+            const ld scale = std::max(abs_da, abs_db);
+            // 符号の異なる外積を直接引かず、和のオーバーフローを避ける。
+            const ld weight = (abs_da / scale) / (abs_da / scale + abs_db / scale);
+            // 整数座標のまま端点を減算しない。凸結合で交点を求める。
+            append(to_ld(a) * (1.0L - weight) + to_ld(b) * weight);
+        }
+    }
+    if (result.size() > 1 && result.front() == result.back()) result.pop_back();
+    return result;
+}
+
 template<class T>
 struct Circle {
     Point<T> center;
@@ -1013,13 +1281,6 @@ void validate_circle(const Circle<T>& circle) {
     if (circle.radius < T{}) {
         throw std::invalid_argument("a circle requires a non-negative radius");
     }
-}
-
-template<class T>
-Calc<T> squared_distance(const Point<T>& a, const Point<T>& b) {
-    const auto dx = calc(a.x) - calc(b.x);
-    const auto dy = calc(a.y) - calc(b.y);
-    return dx * dx + dy * dy;
 }
 
 template<class T>
